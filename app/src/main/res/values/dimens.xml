@@ -10,4 +10,14 @@
     <dimen name="nav_elevation">16dp</dimen>
     <!--Height of card view -->
     <dimen name="card_view_height">60dp</dimen>
+
+    <!--Author card view margin -->
+    <dimen name="card_view_margin">5dp</dimen>
+
+    <!--Author profile image dimensions -->
+    <dimen name="profile_dimen">240dp</dimen>
+
+    <!--Author name text size -->
+    <dimen name="author_name_dimen">20dp</dimen>
+
 </resources>

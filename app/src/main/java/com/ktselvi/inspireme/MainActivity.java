@@ -28,7 +28,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ktselvi.inspireme.fragments.AuthorsFragment;
 import com.ktselvi.inspireme.fragments.CategoriesListFragment;
+import com.ktselvi.inspireme.model.Author;
 import com.ktselvi.inspireme.network.NetworkAccess;
 
 import java.util.ArrayList;
@@ -46,6 +48,8 @@ public class MainActivity extends AppCompatActivity
     private ValueEventListener authorsListener;
     private FirebaseAnalytics mFirebaseAnalytics;
     private ArrayList<String> mCategoriesList;
+    private ArrayList<Author> mAuthorsList;
+
     private String ITEM_CATEGORIES = "Categories";
     private String ITEM_AUTHORS = "Authors";
     private String ITEM_FAVOURITES = "Favourites";
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity
 
     private BroadcastReceiver mConnectionReceiver;
     private CategoriesListFragment categoriesListFragment;
+    private AuthorsFragment authorsListFragment;
 
     @BindView(R.id.no_network_error)
     TextView noNetworkErrorView;
@@ -68,6 +73,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         mCategoriesList = new ArrayList<>();
+        mAuthorsList = new ArrayList<>();
         //Initializing UI elements
         setUpUi();
 
@@ -253,10 +259,12 @@ public class MainActivity extends AppCompatActivity
         authorsListener = new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //mAuthorsList.clear();
+                mAuthorsList.clear();
                 for (DataSnapshot child : dataSnapshot.getChildren()){
-                    //mAuthorsList.add((String) child.getValue());
+                    Author a = child.getValue(Author.class);
+                    mAuthorsList.add(a);
                 }
+                addAuthorsListView();
             }
 
             @Override
@@ -265,13 +273,21 @@ public class MainActivity extends AppCompatActivity
             }
         };
         mAuthorsReference.addValueEventListener(authorsListener);
-        addAuthorsListView();
     }
 
     /**
      * Adds the fragment to display authors list view
      */
     private void addAuthorsListView() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        authorsListFragment = new AuthorsFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("AUTHORS_LIST", mAuthorsList);
+        authorsListFragment.setArguments(bundle);
+
+        ft.replace(R.id.fragment_holder, authorsListFragment, FRAGMENT_TAG).commit();
     }
 
     @Override

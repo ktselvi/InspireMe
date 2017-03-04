@@ -12,4 +12,7 @@
     <!--Not connected to network error message -->
     <string name="no_network_error_text">Oops...It looks like you are not connected to the internet!! Please make sure you are connected to a network.</string>
 
+    <!--Description for the author's profile picture -->
+    <string name="profile_picture">Author's profile picture</string>
+
 </resources>

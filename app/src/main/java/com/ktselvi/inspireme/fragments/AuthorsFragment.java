@@ -2,7 +2,7 @@ package com.ktselvi.inspireme.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 
 import com.google.firebase.crash.FirebaseCrash;
 import com.ktselvi.inspireme.R;
+import com.ktselvi.inspireme.adapters.AuthorAdapter;
 import com.ktselvi.inspireme.adapters.CategoryAdapter;
+import com.ktselvi.inspireme.model.Author;
 
 import java.util.ArrayList;
 
@@ -21,35 +23,35 @@ import butterknife.ButterKnife;
  * Created by tkumares on 05-Mar-17.
  */
 
-public class CategoriesListFragment extends Fragment {
+public class AuthorsFragment extends Fragment {
 
-    private ArrayList<String> categories;
-    private LinearLayoutManager layoutManager;
-    private CategoryAdapter adapter;
+    private ArrayList<Author> authors;
+    private GridLayoutManager layoutManager;
+    private AuthorAdapter adapter;
 
-    @BindView(R.id.categories_recycler_view)
+    @BindView(R.id.author_recycler_view)
     RecyclerView recyclerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         //Used a recycler view layout with card view for displaying categories
-        View v = inflater.inflate(R.layout.categories_list_fragment, container, false);
-        categories = getArguments().getStringArrayList("CAT_LIST");
+        View v = inflater.inflate(R.layout.authors_list_fragment, container, false);
+        authors = getArguments().getParcelableArrayList("AUTHORS_LIST");
         ButterKnife.bind(this, v);
 
         //Set the layout manager for the recycler view
-        layoutManager = new LinearLayoutManager(getContext());;
+        layoutManager = new GridLayoutManager(getContext(),2);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 
-        if(categories != null){
+        if(authors != null){
             //set the adapter
-            adapter = new CategoryAdapter(categories);
+            adapter = new AuthorAdapter(getContext(),authors);
             recyclerView.setAdapter(adapter);
         }
         else {
-            FirebaseCrash.log("CategoriesListFragment invoked without data");
+            FirebaseCrash.log("AuthorsFragment invoked without data");
         }
 
         return v;
