@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_category"
+            android:icon="@drawable/ic_view_list_black_24dp"
+            android:title="@string/nav_categories_title" />
+        <item
+            android:id="@+id/nav_authors"
+            android:icon="@drawable/ic_person_outline_black_24dp"
+            android:title="@string/nav_authors_title" />
+        <item
+            android:id="@+id/nav_fav"
+            android:icon="@drawable/ic_favorite_black_24dp"
+            android:title="@string/nav_fav_title" />
+    </group>
+</menu>

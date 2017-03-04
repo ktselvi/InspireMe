@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "945749083642",
+    "firebase_url": "https://inspire-me-732e8.firebaseio.com",
+    "project_id": "inspire-me-732e8",
+    "storage_bucket": "inspire-me-732e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:945749083642:android:7e3b487a655fcd3b",
+        "android_client_info": {
+          "package_name": "com.ktselvi.inspireme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "945749083642-hqg1pie08gl7j6i5cc4g3qr9qe2l83bk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCqAiSe5hn3LfaEKWmci5513nvBSygpzkA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Inspire Me</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <!-- Strings used in navigation drawer-->
+    <string name="nav_categories_title">Categories</string>
+    <string name="nav_authors_title">Authors</string>
+    <string name="nav_fav_title">Favourites</string>
+</resources>
