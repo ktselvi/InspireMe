@@ -35,5 +35,11 @@ dependencies {
 
     //Firebase database
     compile 'com.google.firebase:firebase-database:10.2.0'
+    //Firebase crash reporting
+    compile 'com.google.firebase:firebase-crash:10.2.0'
+
+    //Butterknife library
+    compile 'com.jakewharton:butterknife:8.5.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }
 apply plugin: 'com.google.gms.google-services'
