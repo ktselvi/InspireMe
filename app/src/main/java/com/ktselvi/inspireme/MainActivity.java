@@ -22,12 +22,25 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mDatabaseReference;
+    private DatabaseReference mCategoriesReference;
+    private DatabaseReference mAuthorsReference;
+    private DatabaseReference mQuotesReference;
     ArrayList<String> categories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        categories=new ArrayList<>();
+        //Initializing UI elements
+        setUpUi();
+        //Setting up Firebase
+        initializeFirebase();
+        //Add listeners for firebase references
+        getCategoriesData();
+    }
+
+    private void setUpUi() {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -40,10 +53,17 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
 
+    /**
+     * This method initializes the firebase references and sets the correct properties
+     */
+    private void initializeFirebase() {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mDatabaseReference = mFirebaseDatabase.getReference();
-        getData();
+        mFirebaseDatabase.setPersistenceEnabled(true);
+        mCategoriesReference = mFirebaseDatabase.getReference("categories");
+        mAuthorsReference = mFirebaseDatabase.getReference("authors");
+        mQuotesReference = mFirebaseDatabase.getReference("quotes");
     }
 
     @Override
@@ -75,17 +95,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void getData(){
-        categories=new ArrayList<>();
-        DatabaseReference categoriesref = mDatabaseReference.child("quotes");
-        categoriesref.orderByChild("tag").equalTo("Life").addValueEventListener(new ValueEventListener() {
+    private void getCategoriesData(){
+        mCategoriesReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                categories.clear();
                 for (DataSnapshot child : dataSnapshot.getChildren()){
-                    //categories.add((String) child.getValue());
-                    for(DataSnapshot a:child.getChildren()){
-                        Log.i("authors",a.getKey()+" "+a.getValue());
-                    }
+                    categories.add((String) child.getValue());
                 }
             }
 
