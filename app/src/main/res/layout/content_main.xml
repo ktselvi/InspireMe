@@ -16,9 +16,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You are not connected to internet!"
+        android:text="@string/no_network_error_text"
         android:visibility="invisible"
-        android:id="@+id/no_network_error"/>
+        android:id="@+id/no_network_error"
+        android:layout_centerInParent="true"
+        android:textStyle="bold"/>
 
     <ProgressBar
         android:layout_width="match_parent"

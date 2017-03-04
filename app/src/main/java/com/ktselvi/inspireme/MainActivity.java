@@ -1,5 +1,9 @@
 package com.ktselvi.inspireme;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
@@ -43,6 +48,8 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences mPreferences;
     private String FIRST_USAGE_TAG = "FirstUsage";
 
+    private BroadcastReceiver mConnectionReceiver;
+
     @BindView(R.id.no_network_error)
     TextView noNetworkErrorView;
 
@@ -71,6 +78,8 @@ public class MainActivity extends AppCompatActivity
             }
             else{
                 noNetworkErrorView.setVisibility(View.VISIBLE);
+                //Listening to network changes
+                setConnectivityReceiver();
             }
         }
         else {
@@ -79,6 +88,30 @@ public class MainActivity extends AppCompatActivity
             //Add listeners for firebase references
             getCategoriesData();
         }
+    }
+
+    //This method creates and registers a BroadcastReceiver for listening to network changes
+    private void setConnectivityReceiver() {
+        mConnectionReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if(NetworkAccess.isConnectedToNetwork(context)){
+                    noNetworkErrorView.setVisibility(View.INVISIBLE);
+                    progressBarView.setVisibility(View.VISIBLE);
+                    //Setting up Firebase
+                    initializeFirebase();
+                    //Starting the Async Task to fetch data
+                    new CategoriesAsyncTask().execute();
+                    unregisterReceiver(mConnectionReceiver);
+                    mConnectionReceiver = null;
+                }
+            }
+        };
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+
+        registerReceiver(mConnectionReceiver, filter);
     }
 
     private void setUpUi() {
@@ -188,8 +221,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy(){
+        super.onDestroy();
         if(mCategoriesReference != null && categoriesListener!= null){
             mCategoriesReference.removeEventListener(categoriesListener);
+        }
+
+        if(mConnectionReceiver != null){
+            unregisterReceiver(mConnectionReceiver);
+            mConnectionReceiver = null;
         }
     }
 }
