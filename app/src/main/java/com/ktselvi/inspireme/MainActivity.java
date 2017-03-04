@@ -8,6 +8,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
@@ -26,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.ktselvi.inspireme.fragments.CategoriesListFragment;
 import com.ktselvi.inspireme.network.NetworkAccess;
 
 import java.util.ArrayList;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mCategoriesReference;
     private ValueEventListener categoriesListener;
+    private DatabaseReference mAuthorsReference;
+    private ValueEventListener authorsListener;
     private FirebaseAnalytics mFirebaseAnalytics;
     private ArrayList<String> mCategoriesList;
     private String ITEM_CATEGORIES = "Categories";
@@ -47,8 +52,10 @@ public class MainActivity extends AppCompatActivity
     private String ITEM_ID = "Navigation drawer item";
     private SharedPreferences mPreferences;
     private String FIRST_USAGE_TAG = "FirstUsage";
+    private String FRAGMENT_TAG = "ListFragment";
 
     private BroadcastReceiver mConnectionReceiver;
+    private CategoriesListFragment categoriesListFragment;
 
     @BindView(R.id.no_network_error)
     TextView noNetworkErrorView;
@@ -140,6 +147,8 @@ public class MainActivity extends AppCompatActivity
         mFirebaseDatabase.setPersistenceEnabled(true);
         mCategoriesReference = mFirebaseDatabase.getReference("categories");
         mCategoriesReference.keepSynced(true);
+        mAuthorsReference = mFirebaseDatabase.getReference("authors");
+        mAuthorsReference.keepSynced(true);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
@@ -162,9 +171,11 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_category) {
             // Log the select event using firebase analytics
             logAnalyticEvent(ITEM_CATEGORIES);
+            getCategoriesData();
         } else if (id == R.id.nav_authors) {
             // Log the select event using firebase analytics
             logAnalyticEvent(ITEM_AUTHORS);
+            getAuthorsData();
         } else if (id == R.id.nav_fav) {
             // Log the select event using firebase analytics
             logAnalyticEvent(ITEM_FAVOURITES);
@@ -209,6 +220,7 @@ public class MainActivity extends AppCompatActivity
                 for (DataSnapshot child : dataSnapshot.getChildren()){
                     mCategoriesList.add((String) child.getValue());
                 }
+                addCategoriesListView();
             }
 
             @Override
@@ -219,11 +231,57 @@ public class MainActivity extends AppCompatActivity
         mCategoriesReference.addValueEventListener(categoriesListener);
     }
 
+    /**
+     * Adds the fragment to display categories list view
+     */
+    private void addCategoriesListView() {
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+
+        categoriesListFragment = new CategoriesListFragment();
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList("CAT_LIST", mCategoriesList);
+        categoriesListFragment.setArguments(bundle);
+
+        ft.replace(R.id.fragment_holder, categoriesListFragment, FRAGMENT_TAG).commit();
+    }
+
+    /**
+     * Getting the authors data from Firebase database
+     */
+    private void getAuthorsData(){
+        authorsListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                //mAuthorsList.clear();
+                for (DataSnapshot child : dataSnapshot.getChildren()){
+                    //mAuthorsList.add((String) child.getValue());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                FirebaseCrash.log("getAuthorsData - Could not fetch data : "+databaseError.toString());
+            }
+        };
+        mAuthorsReference.addValueEventListener(authorsListener);
+        addAuthorsListView();
+    }
+
+    /**
+     * Adds the fragment to display authors list view
+     */
+    private void addAuthorsListView() {
+    }
+
     @Override
     protected void onDestroy(){
         super.onDestroy();
         if(mCategoriesReference != null && categoriesListener!= null){
             mCategoriesReference.removeEventListener(categoriesListener);
+        }
+        if(mAuthorsReference != null && authorsListener!= null){
+            mAuthorsReference.removeEventListener(authorsListener);
         }
 
         if(mConnectionReceiver != null){

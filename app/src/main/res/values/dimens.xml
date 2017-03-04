@@ -8,4 +8,6 @@
     <dimen name="fab_margin">16dp</dimen>
     <!-- Elevation value for navigation drawer-->
     <dimen name="nav_elevation">16dp</dimen>
+    <!--Height of card view -->
+    <dimen name="card_view_height">60dp</dimen>
 </resources>
