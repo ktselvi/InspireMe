@@ -1,6 +1,8 @@
 package com.ktselvi.inspireme.adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,19 +20,41 @@ import java.util.ArrayList;
 public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuoteHolder>  {
 
     private ArrayList<Quote> quotesList;
+    private String viewType;
+    private Context context;
 
-    public QuotesAdapter(ArrayList<Quote> quotesList) {
+    public QuotesAdapter(Context context, ArrayList<Quote> quotesList, String viewType) {
+        this.context = context;
         this.quotesList = quotesList;
+        this.viewType = viewType;
     }
 
     @Override
     public void onBindViewHolder(QuotesAdapter.QuoteHolder holder, int position) {
         TextView quoteTextView = holder.quoteView;
-        TextView authorTextView = holder.authorNameView;
+        TextView infoTextView = holder.infoView;
 
         Quote quoteObj = quotesList.get(position);
         quoteTextView.setText(quoteObj.getQuote());
-        authorTextView.setText(quoteObj.getAuthor());
+
+        int sizeInDp = 10;
+        float scale = context.getResources().getDisplayMetrics().density;
+        int dpAsPixels = (int) (sizeInDp*scale + 0.5f);
+
+        //Using the viewType here to determine if the quotes are for a particular category or an author
+        //If the quotes are with respect to an author, display the tag associated with the quote
+        //If the quotes are with respect to a particular category, then display the author name for each quote
+        //Also, tag info will be displayed at the beginning(left hand side), whereas author name will be displayed at the end(right hand side)
+        if("categories".equals(this.viewType)){
+            infoTextView.setText(quoteObj.getAuthor());
+            infoTextView.setGravity(Gravity.END);
+            infoTextView.setPaddingRelative(0,dpAsPixels,dpAsPixels,dpAsPixels);
+        }
+        else if("authors".equals(this.viewType)){
+            infoTextView.setText("Tag: "+quoteObj.getTag());
+            infoTextView.setGravity(Gravity.START);
+            infoTextView.setPaddingRelative(dpAsPixels,dpAsPixels,0,dpAsPixels);
+        }
     }
 
     @Override
@@ -40,12 +64,12 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuoteHolde
 
     public class QuoteHolder extends RecyclerView.ViewHolder {
         TextView quoteView;
-        TextView authorNameView;
+        TextView infoView;
 
         public QuoteHolder(View itemView) {
             super(itemView);
             quoteView = (TextView) itemView.findViewById(R.id.quote_text);
-            authorNameView = (TextView) itemView.findViewById(R.id.quote_author_name);
+            infoView = (TextView) itemView.findViewById(R.id.quote_info);
         }
     }
 

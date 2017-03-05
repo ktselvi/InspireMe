@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -73,6 +74,15 @@ public class QuotesListActivity extends AppCompatActivity {
         else {
             viewType = extras.getString(KEY_VIEW_TYPE);
             selectedValue = extras.getString(KEY_SELECTED_VALUE);
+
+            //Log the event in firebase analytics
+            Bundle bundle = new Bundle();
+            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, viewType);
+            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedValue);
+
+            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
             //Initialize firebase database reference and fetch the quotes
             setUpFirebase();
             fetchQuotes();
@@ -130,6 +140,7 @@ public class QuotesListActivity extends AppCompatActivity {
         QuotesListFragment quotesListFragment = new QuotesListFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("QUOTES_LIST", quotesList);
+        bundle.putString("VIEW_TYPE", viewType);
         quotesListFragment.setArguments(bundle);
 
         ft.replace(R.id.quotes_list_fragment_holder, quotesListFragment, FRAGMENT_TAG).commit();

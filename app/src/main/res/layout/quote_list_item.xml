@@ -39,9 +39,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/quote_padding"
                 android:textColor="@color/quote_list_author_name_text"
-                android:id="@+id/quote_author_name"
+                android:id="@+id/quote_info"
                 android:textSize="@dimen/quotes_list_author_name_dimen"
                 android:gravity="end"/>
 

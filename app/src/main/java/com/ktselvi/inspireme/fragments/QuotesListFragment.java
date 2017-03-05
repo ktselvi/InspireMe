@@ -25,6 +25,7 @@ import butterknife.ButterKnife;
 public class QuotesListFragment extends Fragment {
 
     private ArrayList<Quote> quotesList;
+    private String viewType;
 
     @BindView(R.id.quotes_recycler_view)
     RecyclerView recyclerView;
@@ -36,13 +37,15 @@ public class QuotesListFragment extends Fragment {
         ButterKnife.bind(this, v);
 
         quotesList = getArguments().getParcelableArrayList("QUOTES_LIST");
+        //This will be used to decide the additional info to be shown along with an quote
+        viewType = getArguments().getString("VIEW_TYPE");
 
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
 
         if(quotesList != null){
-            QuotesAdapter adapter = new QuotesAdapter(quotesList);
+            QuotesAdapter adapter = new QuotesAdapter(getActivity(), quotesList, viewType);
             recyclerView.setAdapter(adapter);
         }
         else {
