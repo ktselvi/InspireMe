@@ -17,4 +17,12 @@
     <!--Description for the author's profile picture -->
     <string name="profile_picture">Profile picture</string>
 
+    <string name="share_menu_option">Share</string>
+
+    <string name="share_quote_subject">Hey...Check out this beautiful quote from InspireMe: </string>
+
+    <!-- FAB messgaes -->
+    <string name="fav_added">Quote marked as favourite</string>
+    <string name="fav_removed">Quote removed from favourites</string>
+
 </resources>
