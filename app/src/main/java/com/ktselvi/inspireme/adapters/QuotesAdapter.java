@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ktselvi.inspireme.R;
+import com.ktselvi.inspireme.handlers.QuoteClickListener;
 import com.ktselvi.inspireme.model.Quote;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuoteHolde
         TextView quoteTextView = holder.quoteView;
         TextView infoTextView = holder.infoView;
 
-        Quote quoteObj = quotesList.get(position);
+        final Quote quoteObj = quotesList.get(position);
         quoteTextView.setText(quoteObj.getQuote());
 
         int sizeInDp = 10;
@@ -55,6 +56,14 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuoteHolde
             infoTextView.setGravity(Gravity.START);
             infoTextView.setPaddingRelative(dpAsPixels,dpAsPixels,0,dpAsPixels);
         }
+        quoteTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(context instanceof QuoteClickListener){
+                    ((QuoteClickListener)context).handleQuoteClicked(quoteObj);
+                }
+            }
+        });
     }
 
     @Override

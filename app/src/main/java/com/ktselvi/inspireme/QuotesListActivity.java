@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ktselvi.inspireme.fragments.QuotesListFragment;
+import com.ktselvi.inspireme.handlers.QuoteClickListener;
 import com.ktselvi.inspireme.model.Quote;
 
 import java.util.ArrayList;
@@ -28,7 +30,7 @@ import butterknife.ButterKnife;
  * Created by tkumares on 05-Mar-17.
  */
 
-public class QuotesListActivity extends AppCompatActivity {
+public class QuotesListActivity extends AppCompatActivity implements QuoteClickListener{
 
     private String KEY_VIEW_TYPE = "ViewType";
     private String KEY_SELECTED_VALUE = "Value";
@@ -66,26 +68,35 @@ public class QuotesListActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbarLayout.setTitle(getString(R.string.app_title_quotes));
 
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras == null) {
-            FirebaseCrash.report(new Exception("QuotesListActivity initialized without the needed values"));
+        if(savedInstanceState != null){
+            //restore state
+            viewType = savedInstanceState.getString("KEY_VIEW_TYPE");
+            selectedValue = savedInstanceState.getString("KEY_VALUE");
+            quotesList = savedInstanceState.getParcelableArrayList("KEY_LIST");
+            initializeFragment();
         }
-        else {
-            viewType = extras.getString(KEY_VIEW_TYPE);
-            selectedValue = extras.getString(KEY_SELECTED_VALUE);
+        else{
+            Intent intent = getIntent();
+            Bundle extras = intent.getExtras();
+            if (extras == null) {
+                FirebaseCrash.report(new Exception("QuotesListActivity initialized without the needed values"));
+            }
+            else {
+                viewType = extras.getString(KEY_VIEW_TYPE);
+                selectedValue = extras.getString(KEY_SELECTED_VALUE);
 
-            //Log the event in firebase analytics
-            Bundle bundle = new Bundle();
-            bundle.putString(FirebaseAnalytics.Param.ITEM_ID, viewType);
-            bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedValue);
+                //Log the event in firebase analytics
+                Bundle bundle = new Bundle();
+                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, viewType);
+                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedValue);
 
-            FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-            mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+                FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
-            //Initialize firebase database reference and fetch the quotes
-            setUpFirebase();
-            fetchQuotes();
+                //Initialize firebase database reference and fetch the quotes
+                setUpFirebase();
+                fetchQuotes();
+            }
         }
     }
 
@@ -161,5 +172,36 @@ public class QuotesListActivity extends AppCompatActivity {
         if (mQuotesReference != null && quotesListener_Author != null) {
             mQuotesReference.removeEventListener(quotesListener_Author);
         }
+    }
+
+    @Override
+    public void handleQuoteClicked(Quote quote) {
+        Intent intent = new Intent(this, QuoteDetailActivity.class);
+        intent.putExtra("QUOTE_OBJECT",quote);
+        startActivity(intent);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        //Save the state variables
+        savedInstanceState.putString("KEY_VIEW_TYPE", viewType);
+        savedInstanceState.putString("KEY_VALUE", selectedValue);
+        savedInstanceState.putParcelableArrayList("KEY_LIST", quotesList);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

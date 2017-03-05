@@ -25,8 +25,12 @@
         <activity
             android:name=".QuotesListActivity"
             android:label="@string/app_title_quotes"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".QuoteDetailActivity"
+            android:label="@string/app_title_quote"
+            android:parentActivityName=".QuotesListActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

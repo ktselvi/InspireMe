@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context="com.ktselvi.inspireme.MainActivity">
 
-    <!--Referred http://stackoverflow.com/questions/31115531/add-elevation-shadow-on-toolbar-for-pre-lollipop-devices for adding elevation -->
+    <!--Referred http://stackoverflow.com/questions/31115531/add-elevation-shadow-on-toolbar-for-pre-lollipop-devices for adding elevation using animator -->
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

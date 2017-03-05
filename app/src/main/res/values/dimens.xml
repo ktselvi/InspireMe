@@ -30,4 +30,8 @@
     <!--Quotes list - Author name text size -->
     <dimen name="quotes_list_author_name_dimen">18dp</dimen>
 
+    <!--Quote detail view dimensions-->
+    <dimen name="quote_text_size">25dp</dimen>
+    <dimen name="author_margin">10dp</dimen>
+
 </resources>
