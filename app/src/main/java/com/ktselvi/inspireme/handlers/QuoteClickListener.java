@@ -7,5 +7,5 @@ import com.ktselvi.inspireme.model.Quote;
  */
 
 public interface QuoteClickListener {
-    void handleQuoteClicked(Quote quote);
+    void handleQuoteClicked(int position);
 }

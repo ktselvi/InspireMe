@@ -175,9 +175,10 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
     }
 
     @Override
-    public void handleQuoteClicked(Quote quote) {
+    public void handleQuoteClicked(int position) {
         Intent intent = new Intent(this, QuoteDetailActivity.class);
-        intent.putExtra("QUOTE_OBJECT",quote);
+        intent.putExtra("QUOTE_INDEX",position);
+        intent.putExtra("QUOTES_LIST", quotesList);
         startActivity(intent);
     }
 

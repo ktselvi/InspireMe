@@ -24,6 +24,10 @@
 
 </android.support.design.widget.AppBarLayout>
 
-<include layout="@layout/quote_detail_content" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/quote_pager"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v4.view.ViewPager>
 
 </android.support.design.widget.CoordinatorLayout>

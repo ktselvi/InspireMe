@@ -56,11 +56,14 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuoteHolde
             infoTextView.setGravity(Gravity.START);
             infoTextView.setPaddingRelative(dpAsPixels,dpAsPixels,0,dpAsPixels);
         }
+
+        final int clickedPosition = position;
+
         quoteTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(context instanceof QuoteClickListener){
-                    ((QuoteClickListener)context).handleQuoteClicked(quoteObj);
+                    ((QuoteClickListener)context).handleQuoteClicked(clickedPosition);
                 }
             }
         });
