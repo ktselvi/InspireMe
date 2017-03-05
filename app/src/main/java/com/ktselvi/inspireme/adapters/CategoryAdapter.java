@@ -6,7 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.ktselvi.inspireme.R;
+import com.ktselvi.inspireme.handlers.CategoryClickListener;
 
 import java.util.ArrayList;
 
@@ -17,9 +19,11 @@ import java.util.ArrayList;
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryHolder> {
 
     private ArrayList<String> dataList;
+    private CategoryClickListener listener;
 
-    public CategoryAdapter(ArrayList<String> data){
+    public CategoryAdapter(CategoryClickListener clickListener, ArrayList<String> data){
         dataList = new ArrayList<>(data);
+        listener = clickListener;
     }
 
     @Override
@@ -34,6 +38,18 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
     public void onBindViewHolder(CategoryAdapter.CategoryHolder holder, int position) {
         TextView textView = holder.categoryName;
         textView.setText(dataList.get(position));
+        textView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    String category = (String) ((TextView)view).getText();
+                    listener.handleCategoryClicked(category);
+                }
+                catch(Exception e){
+                    FirebaseCrash.report(new Exception("Exception in ClickListener of CategoryAdapter: "+e.getMessage()));
+                }
+            }
+        });
     }
 
     @Override

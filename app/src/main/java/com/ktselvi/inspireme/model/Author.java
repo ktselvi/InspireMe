@@ -10,6 +10,7 @@ import android.os.Parcelable;
 public class Author implements Parcelable {
 
     private String name;
+    private String profile_picture;
 
     public Author() {
     }
@@ -29,8 +30,6 @@ public class Author implements Parcelable {
     public void setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
     }
-
-    private String profile_picture;
 
     @Override
     public int describeContents() {

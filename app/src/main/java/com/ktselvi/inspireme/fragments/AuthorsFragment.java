@@ -47,7 +47,7 @@ public class AuthorsFragment extends Fragment {
 
         if(authors != null){
             //set the adapter
-            adapter = new AuthorAdapter(getContext(),authors);
+            adapter = new AuthorAdapter(getActivity(), authors);
             recyclerView.setAdapter(adapter);
         }
         else {

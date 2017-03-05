@@ -16,8 +16,18 @@
 
     <!--Author profile image dimensions -->
     <dimen name="profile_dimen">240dp</dimen>
+    <dimen name="profile_dimen_height">220dp</dimen>
 
     <!--Author name text size -->
     <dimen name="author_name_dimen">20dp</dimen>
+
+    <!--Padding for the quotes card view -->
+    <dimen name="quote_padding">10dp</dimen>
+
+    <dimen name="card_corner_radius">6dp</dimen>
+    <dimen name="card_elevation">4dp</dimen>
+
+    <!--Quotes list - Author name text size -->
+    <dimen name="quotes_list_author_name_dimen">18dp</dimen>
 
 </resources>

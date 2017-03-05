@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.google.firebase.crash.FirebaseCrash;
 import com.ktselvi.inspireme.R;
 import com.ktselvi.inspireme.adapters.CategoryAdapter;
+import com.ktselvi.inspireme.handlers.CategoryClickListener;
 
 import java.util.ArrayList;
 
@@ -45,7 +46,7 @@ public class CategoriesListFragment extends Fragment {
 
         if(categories != null){
             //set the adapter
-            adapter = new CategoryAdapter(categories);
+            adapter = new CategoryAdapter((CategoryClickListener) getActivity(), categories);
             recyclerView.setAdapter(adapter);
         }
         else {

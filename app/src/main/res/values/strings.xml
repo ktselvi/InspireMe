@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Inspire Me</string>
     <string name="app_title_quotes">Quotes</string>
+    <string name="subtitle_quotes_author">By </string>
     <string name="app_title_quote">Quote</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>

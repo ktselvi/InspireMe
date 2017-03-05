@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -30,6 +29,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.ktselvi.inspireme.fragments.AuthorsFragment;
 import com.ktselvi.inspireme.fragments.CategoriesListFragment;
+import com.ktselvi.inspireme.handlers.AuthorClickListener;
+import com.ktselvi.inspireme.handlers.CategoryClickListener;
 import com.ktselvi.inspireme.model.Author;
 import com.ktselvi.inspireme.network.NetworkAccess;
 
@@ -39,7 +40,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,CategoryClickListener,AuthorClickListener {
+
+    //This is to avoid the "Calls to setPersistenceEnabled() must be made before any other usage of FirebaseDatabase instance" exception
+    static {
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+    }
 
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mCategoriesReference;
@@ -57,6 +63,8 @@ public class MainActivity extends AppCompatActivity
     private SharedPreferences mPreferences;
     private String FIRST_USAGE_TAG = "FirstUsage";
     private String FRAGMENT_TAG = "ListFragment";
+    private String KEY_VIEW_TYPE = "ViewType";
+    private String KEY_SELECTED_VALUE = "Value";
 
     private BroadcastReceiver mConnectionReceiver;
     private CategoriesListFragment categoriesListFragment;
@@ -150,7 +158,6 @@ public class MainActivity extends AppCompatActivity
      */
     private void initializeFirebase() {
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mFirebaseDatabase.setPersistenceEnabled(true);
         mCategoriesReference = mFirebaseDatabase.getReference("categories");
         mCategoriesReference.keepSynced(true);
         mAuthorsReference = mFirebaseDatabase.getReference("authors");
@@ -197,6 +204,34 @@ public class MainActivity extends AppCompatActivity
         bundle.putString(FirebaseAnalytics.Param.ITEM_ID, ITEM_ID);
         bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, name);
         mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+    }
+
+    /**
+     * Click listener for authors list
+     * It is called when a click action is performed on the profile picture of the author
+     * It initiates the QuotesListActivity with the author name
+     * @param authorName
+     */
+    @Override
+    public void handleAuthorClicked(String authorName) {
+        Intent intent = new Intent(this, QuotesListActivity.class);
+        intent.putExtra(KEY_VIEW_TYPE, "authors");
+        intent.putExtra(KEY_SELECTED_VALUE, authorName);
+        startActivity(intent);
+    }
+
+    /**
+     * Click listener for categories list
+     * It is called when a click action is performed on category name
+     * It initiates the QuotesListActivity with the category name
+     * @param categoryName
+     */
+    @Override
+    public void handleCategoryClicked(String categoryName) {
+        Intent intent = new Intent(this, QuotesListActivity.class);
+        intent.putExtra(KEY_VIEW_TYPE, "categories");
+        intent.putExtra(KEY_SELECTED_VALUE, categoryName);
+        startActivity(intent);
     }
 
     private class CategoriesAsyncTask extends AsyncTask<Void, Void, Void> {
@@ -248,6 +283,10 @@ public class MainActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putStringArrayList("CAT_LIST", mCategoriesList);
         categoriesListFragment.setArguments(bundle);
+
+        if(progressBarView.getVisibility() == View.VISIBLE){
+            progressBarView.setVisibility(View.INVISIBLE);
+        }
 
         ft.replace(R.id.fragment_holder, categoriesListFragment, FRAGMENT_TAG).commit();
     }

@@ -8,7 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.ktselvi.inspireme.R;
+import com.ktselvi.inspireme.handlers.AuthorClickListener;
 import com.ktselvi.inspireme.model.Author;
 import com.squareup.picasso.Picasso;
 
@@ -40,8 +42,20 @@ public class AuthorAdapter extends RecyclerView.Adapter<AuthorAdapter.AuthorHold
     public void onBindViewHolder(AuthorAdapter.AuthorHolder holder, int position) {
         TextView textView = holder.authorName;
         ImageView imgView = holder.profile;
-        textView.setText(dataList.get(position).getName());
-        Picasso.with(authorContext).load(dataList.get(position).getProfile_picture()).into(imgView);
+        final Author author = dataList.get(position);
+        textView.setText(author.getName());
+        Picasso.with(authorContext).load(author.getProfile_picture()).error(R.drawable.ic_error_outline_black_24dp).into(imgView);
+        imgView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    ((AuthorClickListener)authorContext).handleAuthorClicked(author.getName());
+                }
+                catch(Exception e){
+                    FirebaseCrash.report(new Exception("Exception in ClickListener of AuthorAdapter: "+e.getMessage()));
+                }
+            }
+        });
     }
 
     @Override
