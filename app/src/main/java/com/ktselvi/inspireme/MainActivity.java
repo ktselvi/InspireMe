@@ -32,6 +32,7 @@ import com.ktselvi.inspireme.fragments.CategoriesListFragment;
 import com.ktselvi.inspireme.handlers.AuthorClickListener;
 import com.ktselvi.inspireme.handlers.CategoryClickListener;
 import com.ktselvi.inspireme.model.Author;
+import com.ktselvi.inspireme.model.Quote;
 import com.ktselvi.inspireme.network.NetworkAccess;
 
 import java.util.ArrayList;
@@ -52,9 +53,12 @@ public class MainActivity extends AppCompatActivity
     private ValueEventListener categoriesListener;
     private DatabaseReference mAuthorsReference;
     private ValueEventListener authorsListener;
+    private DatabaseReference mQuotesReference;
+    private ValueEventListener quotesListener;
     private FirebaseAnalytics mFirebaseAnalytics;
     private ArrayList<String> mCategoriesList;
     private ArrayList<Author> mAuthorsList;
+    private ArrayList<Quote> mQuotesList;
 
     private String ITEM_CATEGORIES = "Categories";
     private String ITEM_AUTHORS = "Authors";
@@ -82,6 +86,7 @@ public class MainActivity extends AppCompatActivity
 
         mCategoriesList = new ArrayList<>();
         mAuthorsList = new ArrayList<>();
+        mQuotesList = new ArrayList<>();
         //Initializing UI elements
         setUpUi();
 
@@ -95,7 +100,7 @@ public class MainActivity extends AppCompatActivity
                 //Setting up Firebase
                 initializeFirebase();
                 //Starting the Async Task to fetch data
-                new CategoriesAsyncTask().execute();
+                new DataAsyncTask().execute();
             }
             else{
                 noNetworkErrorView.setVisibility(View.VISIBLE);
@@ -106,8 +111,8 @@ public class MainActivity extends AppCompatActivity
         else {
             //Setting up Firebase
             initializeFirebase();
-            //Add listeners for firebase references
-            getCategoriesData();
+            //Add listeners for firebase references and draw the UI as the categories view is the default view when the activity is created
+            getCategoriesData(true);
         }
     }
 
@@ -122,7 +127,7 @@ public class MainActivity extends AppCompatActivity
                     //Setting up Firebase
                     initializeFirebase();
                     //Starting the Async Task to fetch data
-                    new CategoriesAsyncTask().execute();
+                    new DataAsyncTask().execute();
                     unregisterReceiver(mConnectionReceiver);
                     mConnectionReceiver = null;
                 }
@@ -151,6 +156,7 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setCheckedItem(R.id.nav_category);
     }
 
     /**
@@ -162,6 +168,8 @@ public class MainActivity extends AppCompatActivity
         mCategoriesReference.keepSynced(true);
         mAuthorsReference = mFirebaseDatabase.getReference("authors");
         mAuthorsReference.keepSynced(true);
+        mQuotesReference = mFirebaseDatabase.getReference("quotes");
+        mQuotesReference.keepSynced(true);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
@@ -184,11 +192,25 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_category) {
             // Log the select event using firebase analytics
             logAnalyticEvent(ITEM_CATEGORIES);
-            getCategoriesData();
+            //If there is no data, then fetch the data and after receiving the data, draw the UI
+            if(mCategoriesList.size() == 0){
+                getCategoriesData(true);
+            }
+            else {
+                //There is data, so need to fetch again, just draw the UI
+                addCategoriesListView();
+            }
         } else if (id == R.id.nav_authors) {
             // Log the select event using firebase analytics
             logAnalyticEvent(ITEM_AUTHORS);
-            getAuthorsData();
+            //If there is no data, then fetch the data and after receiving the data, draw the UI
+            if(mAuthorsList.size() == 0){
+                getAuthorsData(true);
+            }
+            else{
+                //There is data, so need to fetch again, just draw the UI
+                addAuthorsListView();
+            }
         } else if (id == R.id.nav_fav) {
             // Log the select event using firebase analytics
             logAnalyticEvent(ITEM_FAVOURITES);
@@ -234,11 +256,15 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    private class CategoriesAsyncTask extends AsyncTask<Void, Void, Void> {
+    private class DataAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @Override
         protected Void doInBackground(Void... params) {
-            getCategoriesData();
+            //As the Async task is called only if it is first run, we pass drawUI as true to getCategoriesData
+            //This is because categories view is the default view when the activity is launched. Hence we want to fetch the data and draw the UI with the results
+            getCategoriesData(true);
+            getAuthorsData(false);
+            getQuotesData();
             return null;
         }
 
@@ -253,23 +279,51 @@ public class MainActivity extends AppCompatActivity
     /**
      * Getting the categories data from Firebase database
      */
-    private void getCategoriesData(){
-        categoriesListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mCategoriesList.clear();
-                for (DataSnapshot child : dataSnapshot.getChildren()){
-                    mCategoriesList.add((String) child.getValue());
+    private void getCategoriesData(final boolean drawUI){
+        if(categoriesListener == null){
+            categoriesListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mCategoriesList.clear();
+                    for (DataSnapshot child : dataSnapshot.getChildren()){
+                        mCategoriesList.add((String) child.getValue());
+                    }
+                    if(drawUI){
+                        addCategoriesListView();
+                    }
                 }
-                addCategoriesListView();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                FirebaseCrash.log("getCategoriesData - Could not fetch data : "+databaseError.toString());
-            }
-        };
-        mCategoriesReference.addValueEventListener(categoriesListener);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    FirebaseCrash.log("getCategoriesData - Could not fetch data : "+databaseError.toString());
+                }
+            };
+            mCategoriesReference.addValueEventListener(categoriesListener);
+        }
+    }
+
+    /**
+     * Getting the quotes data from Firebase database
+     */
+    private void getQuotesData(){
+        if(quotesListener == null){
+            quotesListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mQuotesList.clear();
+                    for (DataSnapshot child : dataSnapshot.getChildren()){
+                        Quote quote = child.getValue(Quote.class);
+                        mQuotesList.add(quote);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    FirebaseCrash.log("getQuotesData - Could not fetch data : "+databaseError.toString());
+                }
+            };
+            mQuotesReference.addValueEventListener(quotesListener);
+        }
     }
 
     /**
@@ -294,24 +348,28 @@ public class MainActivity extends AppCompatActivity
     /**
      * Getting the authors data from Firebase database
      */
-    private void getAuthorsData(){
-        authorsListener = new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mAuthorsList.clear();
-                for (DataSnapshot child : dataSnapshot.getChildren()){
-                    Author a = child.getValue(Author.class);
-                    mAuthorsList.add(a);
+    private void getAuthorsData(final boolean drawUI){
+        if(authorsListener == null){
+            authorsListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    mAuthorsList.clear();
+                    for (DataSnapshot child : dataSnapshot.getChildren()){
+                        Author a = child.getValue(Author.class);
+                        mAuthorsList.add(a);
+                    }
+                    if(drawUI){
+                        addAuthorsListView();
+                    }
                 }
-                addAuthorsListView();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                FirebaseCrash.log("getAuthorsData - Could not fetch data : "+databaseError.toString());
-            }
-        };
-        mAuthorsReference.addValueEventListener(authorsListener);
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    FirebaseCrash.log("getAuthorsData - Could not fetch data : "+databaseError.toString());
+                }
+            };
+            mAuthorsReference.addValueEventListener(authorsListener);
+        }
     }
 
     /**
@@ -337,6 +395,9 @@ public class MainActivity extends AppCompatActivity
         }
         if(mAuthorsReference != null && authorsListener!= null){
             mAuthorsReference.removeEventListener(authorsListener);
+        }
+        if(mQuotesReference != null && quotesListener!= null){
+            mQuotesReference.removeEventListener(quotesListener);
         }
 
         if(mConnectionReceiver != null){
