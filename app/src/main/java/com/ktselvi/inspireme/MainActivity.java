@@ -417,6 +417,11 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    /**
+     * This method is exposed so that the fragments can set the correct selection in the navigation drawer.
+     * This is done so as to handle the cases of back button/up button pressed.
+     * @param id
+     */
     public void setNavDrawerCheckedItem(int id){
         navigationView.setCheckedItem(id);
     }

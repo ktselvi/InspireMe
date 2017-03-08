@@ -1,9 +1,12 @@
 package com.ktselvi.inspireme.fragments;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,7 +29,7 @@ import butterknife.ButterKnife;
 public class CategoriesListFragment extends Fragment {
 
     private ArrayList<String> categories;
-    private LinearLayoutManager layoutManager;
+    private RecyclerView.LayoutManager layoutManager;
     private CategoryAdapter adapter;
 
     @BindView(R.id.categories_recycler_view)
@@ -40,8 +43,21 @@ public class CategoriesListFragment extends Fragment {
         categories = getArguments().getStringArrayList("CAT_LIST");
         ButterKnife.bind(this, v);
 
-        //Set the layout manager for the recycler view
-        layoutManager = new LinearLayoutManager(getContext());;
+        int orientation = getResources().getConfiguration().orientation;
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        float dpWidth = displayMetrics.widthPixels / displayMetrics.density;
+
+        //Checking the device configuration to figure out the correct layout to be used
+        if (orientation == Configuration.ORIENTATION_PORTRAIT && dpWidth < 600)
+            layoutManager = new LinearLayoutManager(getContext());
+        else if (orientation == Configuration.ORIENTATION_PORTRAIT && dpWidth >= 600)
+            layoutManager = new GridLayoutManager(this.getActivity(), 2);
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE && dpWidth >= 600)
+            layoutManager = new GridLayoutManager(this.getActivity(), 3);
+        else if (orientation == Configuration.ORIENTATION_LANDSCAPE && dpWidth < 600)
+            layoutManager = new GridLayoutManager(this.getActivity(), 2);
+
+
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
 

@@ -38,4 +38,8 @@
     <dimen name="widget_padding">8dp</dimen>
     <dimen name="widget_min_width">240dp</dimen>
     <dimen name="widget_min_height">220dp</dimen>
+
+    <!--Values for tablet -->
+    <dimen name="tablet_margin">24dp</dimen>
+    <dimen name="card_margin">10dp</dimen>
 </resources>
