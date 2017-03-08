@@ -45,4 +45,6 @@
 
     <!-- Values for landscape-->
     <dimen name="margin_landscape">20dp</dimen>
+
+    <dimen name="no_fav_text_size">20sp</dimen>
 </resources>

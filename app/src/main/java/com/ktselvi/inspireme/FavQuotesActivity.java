@@ -59,7 +59,7 @@ public class FavQuotesActivity extends AppCompatActivity implements FavQuoteClic
         Intent intent = new Intent(this, QuoteDetailActivity.class);
         intent.putExtra("QUOTE_INDEX", position);
         intent.putParcelableArrayListExtra("QUOTES_LIST", quotes);
-        //Beacuse we just want to display the detailed quote to the user in a read only mode way, we won't display FAB
+        //Because we just want to display the detailed quote to the user in a read only mode way, we won't display FAB
         intent.putExtra("DISPLAY_FAB", false);
         startActivity(intent);
     }

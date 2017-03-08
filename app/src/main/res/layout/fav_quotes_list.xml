@@ -23,11 +23,13 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <!-- Credits to http://stackoverflow.com/questions/10211338/view-inside-scrollview-doesnt-take-all-place for the importance of fillViewPort-->
     <android.support.v4.widget.NestedScrollView
         android:id="@+id/fav_quotes_list_fragment_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:fillViewport="true"/>
 
     </android.support.design.widget.CoordinatorLayout>
