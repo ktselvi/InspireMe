@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="wrap_content"
-    android:id="@+id/quotes_recycler_view" android:layout_margin="@dimen/margin_landscape">
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:id="@+id/quotes_recycler_view" android:layout_marginStart="@dimen/margin_landscape" android:layout_marginEnd="@dimen/margin_landscape">
 
 </android.support.v7.widget.RecyclerView>

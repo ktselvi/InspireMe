@@ -27,7 +27,7 @@
                 android:id="@+id/quote_text"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:clickable="true"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:ellipsize="end"/>
 
             <View
