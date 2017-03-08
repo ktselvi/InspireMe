@@ -24,5 +24,12 @@
     <!-- FAB messgaes -->
     <string name="fav_added">Quote marked as favourite</string>
     <string name="fav_removed">Quote removed from favourites</string>
+    <string name="favourites">Favourites</string>
+
+    <string name="tag_label">Tag: </string>
+    <string name="author_label">By: </string>
+
+    <!-- No favourites message -->
+    <string name="no_favorites_found">No quotes marked as favourite!!!</string>
 
 </resources>

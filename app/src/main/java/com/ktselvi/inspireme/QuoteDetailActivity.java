@@ -1,9 +1,6 @@
 package com.ktselvi.inspireme;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -11,8 +8,6 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Toast;
 
 import com.ktselvi.inspireme.adapters.QuoteDetailPagerAdapter;
 import com.ktselvi.inspireme.model.Quote;
@@ -30,11 +25,8 @@ public class QuoteDetailActivity extends AppCompatActivity {
     @BindView(R.id.quote_detail_toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.fab)
-    FloatingActionButton fab;
-
     private ArrayList<Quote> quotes;
-    private boolean isFav = false;
+    boolean showFab = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,48 +34,28 @@ public class QuoteDetailActivity extends AppCompatActivity {
         setContentView(R.layout.activity_quote_detail);
 
         ButterKnife.bind(this);
+        int currentPosition = 0;
 
-        Intent intent = getIntent();
-        int currentPosition = intent.getIntExtra("QUOTE_INDEX", 0);
-        quotes = intent.getParcelableArrayListExtra("QUOTES_LIST");
+        if(savedInstanceState != null){
+            currentPosition = savedInstanceState.getInt("KEY_POSITION");
+            quotes = savedInstanceState.getParcelableArrayList("KEY_LIST");
+            showFab = savedInstanceState.getBoolean("KEY_FAB");
+        }
+        else {
+            Intent intent = getIntent();
+            currentPosition = intent.getIntExtra("QUOTE_INDEX", 0);
+            quotes = intent.getParcelableArrayListExtra("QUOTES_LIST");
+            showFab = intent.getBooleanExtra("DISPLAY_FAB", true);
+        }
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getString(R.string.app_title_quote));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Setting the pager adapter
-        PagerAdapter pagerAdapter = new QuoteDetailPagerAdapter(getSupportFragmentManager(), quotes);
+        //Setting the pager adapter with the data and the flag to display FAB
+        PagerAdapter pagerAdapter = new QuoteDetailPagerAdapter(getSupportFragmentManager(), quotes, showFab);
         quoteDetailPager.setAdapter(pagerAdapter);
         quoteDetailPager.setCurrentItem(currentPosition);
-
-        //set the properties of FAB
-        setFAB();
-    }
-
-    private void setFAB() {
-        //Query the DB to see if this quote is marked as favourite
-        //If yes, then the FAB will be red colored, else pink
-
-        if(isFav){
-            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.fab_background_fav)));
-        }
-
-        final Context context = this;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(isFav){
-                    Toast.makeText(context, getString(R.string.fav_removed), Toast.LENGTH_SHORT).show();
-                    fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
-                    isFav = false;
-                }
-                else{
-                    Toast.makeText(context, getString(R.string.fav_added), Toast.LENGTH_SHORT).show();
-                    fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.fab_background_fav)));
-                    isFav = true;
-                }
-            }
-        });
     }
 
     @Override
@@ -111,5 +83,13 @@ public class QuoteDetailActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        //Save the state variables
+        savedInstanceState.putInt("KEY_POSITION", quoteDetailPager.getCurrentItem());
+        savedInstanceState.putParcelableArrayList("KEY_LIST", quotes);
+        savedInstanceState.putBoolean("KEY_FAB", showFab);
     }
 }

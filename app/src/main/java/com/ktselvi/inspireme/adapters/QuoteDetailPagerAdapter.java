@@ -17,10 +17,12 @@ import java.util.ArrayList;
 public class QuoteDetailPagerAdapter extends FragmentStatePagerAdapter {
 
     private ArrayList<Quote> quotesList;
+    private boolean flag;
 
-    public QuoteDetailPagerAdapter(FragmentManager fm, ArrayList<Quote> data) {
+    public QuoteDetailPagerAdapter(FragmentManager fm, ArrayList<Quote> data, boolean displayFAB) {
         super(fm);
         this.quotesList = data;
+        flag = displayFAB;
     }
 
     @Override
@@ -28,6 +30,7 @@ public class QuoteDetailPagerAdapter extends FragmentStatePagerAdapter {
         QuoteDetailFragment quoteFragment = new QuoteDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("KEY_QUOTE_OBJ", quotesList.get(position));
+        bundle.putBoolean("KEY_FAB_DISPLAY", flag);
         quoteFragment.setArguments(bundle);
         return quoteFragment;
     }

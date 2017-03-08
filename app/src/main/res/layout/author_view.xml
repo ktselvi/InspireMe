@@ -31,6 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/card_view_margin"
         android:layout_marginStart="@dimen/card_view_margin"
+        android:layout_marginEnd="@dimen/card_view_margin"
         android:layout_below="@id/thumbnail"
         android:textColor="@color/author_name_text"
         android:textSize="@dimen/author_name_dimen"

@@ -2,10 +2,11 @@
 <resources>
     <color name="colorPrimary">#6A1B9A</color>
     <color name="colorPrimaryDark">#4A148C</color>
-    <color name="colorAccent">#F50057</color>
+    <color name="colorAccent">#76FF03</color>
     <color name="cardview_background">#FFEE58</color>
     <color name="author_name_text">#212121</color>
     <color name="quote_list_author_name_text">#424242</color>
     <color name="quote_list_cardview_background">#EFEBE9</color>
     <color name="fab_background_fav">#D50000</color>
+    <color name="widget_background">#BA68C8</color>
 </resources>

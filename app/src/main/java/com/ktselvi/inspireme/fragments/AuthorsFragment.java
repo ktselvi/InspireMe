@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.google.firebase.crash.FirebaseCrash;
+import com.ktselvi.inspireme.MainActivity;
 import com.ktselvi.inspireme.R;
 import com.ktselvi.inspireme.adapters.AuthorAdapter;
 import com.ktselvi.inspireme.adapters.CategoryAdapter;
@@ -55,5 +56,14 @@ public class AuthorsFragment extends Fragment {
         }
 
         return v;
+    }
+
+    /**
+     * When the fragment is resumed, want to set the correct selection in the navigation drawer
+     */
+    @Override
+    public void onResume(){
+        super.onResume();
+        ((MainActivity)this.getActivity()).setNavDrawerCheckedItem(R.id.nav_authors);
     }
 }

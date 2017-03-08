@@ -31,6 +31,31 @@
             android:label="@string/app_title_quote"
             android:parentActivityName=".QuotesListActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".FavQuotesActivity"
+            android:label="@string/favourites"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
+        <!--Widget -->
+        <receiver android:name=".widget.QuoteWidgetProvider" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data android:name="android.appwidget.provider"
+                android:resource="@xml/quote_widget_info" />
+        </receiver>
+
+        <service
+            android:name=".widget.QuoteService"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+        <!--Content provider -->
+        <provider
+            android:name=".database.QuoteProvider"
+            android:authorities="com.ktselvi.inspireme"
+            android:exported="true"/>
     </application>
 
 </manifest>

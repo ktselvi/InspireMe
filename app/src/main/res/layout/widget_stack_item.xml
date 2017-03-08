@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:textStyle="bold"
+        android:background="@color/widget_background"
+        android:textSize="@dimen/author_name_dimen"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:padding="@dimen/activity_horizontal_margin"
+        android:id="@+id/widget_text"/>
+</FrameLayout>

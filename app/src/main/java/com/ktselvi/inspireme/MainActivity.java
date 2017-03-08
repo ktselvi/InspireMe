@@ -80,6 +80,9 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.progress_bar)
     ProgressBar progressBarView;
 
+    @BindView((R.id.nav_view))
+    NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,7 +157,6 @@ public class MainActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_category);
     }
@@ -214,6 +216,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_fav) {
             // Log the select event using firebase analytics
             logAnalyticEvent(ITEM_FAVOURITES);
+            navigateToFav();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -404,5 +407,17 @@ public class MainActivity extends AppCompatActivity
             unregisterReceiver(mConnectionReceiver);
             mConnectionReceiver = null;
         }
+    }
+
+    /**
+     * Navigate to Favourite quotes activity
+     */
+    private void navigateToFav(){
+        Intent intent = new Intent(this, FavQuotesActivity.class);
+        startActivity(intent);
+    }
+
+    public void setNavDrawerCheckedItem(int id){
+        navigationView.setCheckedItem(id);
     }
 }
