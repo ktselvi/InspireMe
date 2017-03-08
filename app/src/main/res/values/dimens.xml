@@ -42,4 +42,7 @@
     <!--Values for tablet -->
     <dimen name="tablet_margin">24dp</dimen>
     <dimen name="card_margin">10dp</dimen>
+
+    <!-- Values for landscape-->
+    <dimen name="margin_landscape">20dp</dimen>
 </resources>
