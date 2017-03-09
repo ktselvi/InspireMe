@@ -263,6 +263,8 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void handleAuthorClicked(String authorName) {
+        //Log the event
+        logAnalyticEvent(authorName);
         Intent intent = new Intent(this, QuotesListActivity.class);
         intent.putExtra(KEY_VIEW_TYPE, "authors");
         intent.putExtra(KEY_SELECTED_VALUE, authorName);
@@ -277,6 +279,8 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void handleCategoryClicked(String categoryName) {
+        //Log the event
+        logAnalyticEvent(categoryName);
         Intent intent = new Intent(this, QuotesListActivity.class);
         intent.putExtra(KEY_VIEW_TYPE, "categories");
         intent.putExtra(KEY_SELECTED_VALUE, categoryName);

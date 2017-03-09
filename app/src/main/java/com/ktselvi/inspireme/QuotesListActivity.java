@@ -9,8 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
-
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -86,14 +84,6 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
 
                 //Set the selected category/author name as the text for collapsing toolbar
                 backgroundText.setText(selectedValue);
-
-                //Log the event in firebase analytics
-                Bundle bundle = new Bundle();
-                bundle.putString(FirebaseAnalytics.Param.ITEM_ID, viewType);
-                bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, selectedValue);
-
-                FirebaseAnalytics mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
-                mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
                 //Initialize firebase database reference and fetch the quotes
                 setUpFirebase();

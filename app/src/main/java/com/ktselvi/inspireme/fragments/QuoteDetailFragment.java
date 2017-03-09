@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.crash.FirebaseCrash;
 import com.ktselvi.inspireme.R;
 import com.ktselvi.inspireme.database.QuotesContract;
 import com.ktselvi.inspireme.model.Quote;
@@ -104,18 +105,28 @@ public class QuoteDetailFragment extends Fragment {
     private void handleClick(){
         int quoteId = getQuoteId();
         if(quoteId != -1){
-            this.getActivity().getContentResolver().delete(Uri.parse(QuotesContract.QuotesTable.CONTENT_URI+"/"+quoteId),null,null);
-            Toast.makeText(this.getActivity(), this.getActivity().getString(R.string.fav_removed), Toast.LENGTH_SHORT).show();
-            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            try {
+                this.getActivity().getContentResolver().delete(Uri.parse(QuotesContract.QuotesTable.CONTENT_URI+"/"+quoteId),null,null);
+                Toast.makeText(this.getActivity(), this.getActivity().getString(R.string.fav_removed), Toast.LENGTH_SHORT).show();
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+            }
+            catch(Exception e){
+                FirebaseCrash.log("Exception occurred while removing from favourites "+e.getMessage());
+            }
         }
         else{
-            ContentValues values = new ContentValues();
-            values.put(QuotesContract.QuotesTable.COLUMN_QUOTE, currentQuote.getQuote());
-            values.put(QuotesContract.QuotesTable.COLUMN_AUTHOR, currentQuote.getAuthor());
-            values.put(QuotesContract.QuotesTable.COLUMN_TAG, currentQuote.getTag());
-            this.getActivity().getContentResolver().insert(QuotesContract.QuotesTable.CONTENT_URI, values);
-            Toast.makeText(this.getActivity(), this.getActivity().getString(R.string.fav_added), Toast.LENGTH_SHORT).show();
-            fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.fab_background_fav)));
+            try{
+                ContentValues values = new ContentValues();
+                values.put(QuotesContract.QuotesTable.COLUMN_QUOTE, currentQuote.getQuote());
+                values.put(QuotesContract.QuotesTable.COLUMN_AUTHOR, currentQuote.getAuthor());
+                values.put(QuotesContract.QuotesTable.COLUMN_TAG, currentQuote.getTag());
+                this.getActivity().getContentResolver().insert(QuotesContract.QuotesTable.CONTENT_URI, values);
+                Toast.makeText(this.getActivity(), this.getActivity().getString(R.string.fav_added), Toast.LENGTH_SHORT).show();
+                fab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.fab_background_fav)));
+            }
+            catch(Exception e) {
+                FirebaseCrash.log("Exception occurred while adding favourite "+e.getMessage());
+            }
         }
     }
 
