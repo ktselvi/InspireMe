@@ -2,6 +2,7 @@
     <string name="app_name">Inspire Me</string>
     <string name="app_title_quotes">Quotes</string>
     <string name="app_title_quote">Quote</string>
+    <string name="loading_message">Loading....</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

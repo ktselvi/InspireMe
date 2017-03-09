@@ -26,19 +26,5 @@
     <FrameLayout
         android:id="@+id/fragment_holder"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-    </FrameLayout>
-
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        style="?android:attr/progressBarStyleLarge"
-        android:visibility="invisible"
-        android:id="@+id/progress_bar"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:progressDrawable="@drawable/circular_progress_bar"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@id/fragment_holder"/>
+        android:layout_height="wrap_content" />
 </RelativeLayout>

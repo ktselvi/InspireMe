@@ -1,5 +1,6 @@
 package com.ktselvi.inspireme;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -73,12 +74,10 @@ public class MainActivity extends AppCompatActivity
     private BroadcastReceiver mConnectionReceiver;
     private CategoriesListFragment categoriesListFragment;
     private AuthorsFragment authorsListFragment;
+    private ProgressDialog mLoadingDialog;
 
     @BindView(R.id.no_network_error)
     TextView noNetworkErrorView;
-
-    @BindView(R.id.progress_bar)
-    ProgressBar progressBarView;
 
     @BindView((R.id.nav_view))
     NavigationView navigationView;
@@ -90,6 +89,12 @@ public class MainActivity extends AppCompatActivity
         mCategoriesList = new ArrayList<>();
         mAuthorsList = new ArrayList<>();
         mQuotesList = new ArrayList<>();
+
+        //Loading indicator using Progress dialog till the data is fetched
+        mLoadingDialog = new ProgressDialog(this);
+        mLoadingDialog.setMessage(getString(R.string.loading_message));
+        mLoadingDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+
         //Initializing UI elements
         setUpUi();
 
@@ -99,7 +104,7 @@ public class MainActivity extends AppCompatActivity
         mPreferences = getSharedPreferences(getPackageName(),MODE_PRIVATE);
         if(mPreferences.getBoolean(FIRST_USAGE_TAG, true)){
             if(NetworkAccess.isConnectedToNetwork(this)){
-                progressBarView.setVisibility(View.VISIBLE);
+                mLoadingDialog.show();
                 //Setting up Firebase
                 initializeFirebase();
                 //Starting the Async Task to fetch data
@@ -126,7 +131,7 @@ public class MainActivity extends AppCompatActivity
             public void onReceive(Context context, Intent intent) {
                 if(NetworkAccess.isConnectedToNetwork(context)){
                     noNetworkErrorView.setVisibility(View.INVISIBLE);
-                    progressBarView.setVisibility(View.VISIBLE);
+                    mLoadingDialog.show();
                     //Setting up Firebase
                     initializeFirebase();
                     //Starting the Async Task to fetch data
@@ -274,7 +279,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            progressBarView.setVisibility(View.INVISIBLE);
+            //mLoadingDialog.dismiss();
             mPreferences.edit().putBoolean(FIRST_USAGE_TAG, false).apply();
         }
     }
@@ -341,8 +346,8 @@ public class MainActivity extends AppCompatActivity
         bundle.putStringArrayList("CAT_LIST", mCategoriesList);
         categoriesListFragment.setArguments(bundle);
 
-        if(progressBarView.getVisibility() == View.VISIBLE){
-            progressBarView.setVisibility(View.INVISIBLE);
+        if(mLoadingDialog != null && mLoadingDialog.isShowing()){
+            mLoadingDialog.dismiss();
         }
 
         ft.replace(R.id.fragment_holder, categoriesListFragment, FRAGMENT_TAG).commit();
@@ -386,6 +391,10 @@ public class MainActivity extends AppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("AUTHORS_LIST", mAuthorsList);
         authorsListFragment.setArguments(bundle);
+
+        if(mLoadingDialog != null && mLoadingDialog.isShowing()){
+            mLoadingDialog.dismiss();
+        }
 
         ft.replace(R.id.fragment_holder, authorsListFragment, FRAGMENT_TAG).commit();
     }
