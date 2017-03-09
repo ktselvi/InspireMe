@@ -36,6 +36,8 @@
         android:layout_margin="24dp"
         android:src="@drawable/ic_favorite_border_white_48px"
         app:elevation="6dp"
-        app:borderWidth="0dp"/>
+        app:borderWidth="0dp"
+        android:contentDescription="@string/fab_icon"
+        android:focusable="true"/>
 
 </RelativeLayout>

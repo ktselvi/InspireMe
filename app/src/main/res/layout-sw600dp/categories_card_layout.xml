@@ -12,7 +12,9 @@
         card_view:cardBackgroundColor="@color/cardview_background"
         card_view:cardCornerRadius="4dp"
         card_view:cardElevation="2dp"
-        card_view:cardUseCompatPadding="true">
+        card_view:cardUseCompatPadding="true"
+        android:contentDescription="@string/category_card_view"
+        android:focusable="true">
 
             <TextView
                 android:layout_width="match_parent"

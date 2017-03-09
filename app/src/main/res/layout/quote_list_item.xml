@@ -11,7 +11,8 @@
         card_view:cardElevation="@dimen/card_elevation"
         card_view:cardUseCompatPadding="true"
         android:layout_margin="@dimen/card_view_margin"
-        card_view:cardBackgroundColor="@color/quote_list_cardview_background">
+        card_view:cardBackgroundColor="@color/quote_list_cardview_background"
+        android:contentDescription="@string/quote_card_view">
 
         <LinearLayout
             android:layout_width="match_parent"

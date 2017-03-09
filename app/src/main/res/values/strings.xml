@@ -15,14 +15,11 @@
     <!--Not connected to network error message -->
     <string name="no_network_error_text">Oops...It looks like you are not connected to the internet!! Please make sure you are connected to a network.</string>
 
-    <!--Description for the author's profile picture -->
-    <string name="profile_picture">Profile picture</string>
-
     <string name="share_menu_option">Share</string>
 
     <string name="share_quote_subject">Hey...Check out this beautiful quote from InspireMe: </string>
 
-    <!-- FAB messgaes -->
+    <!-- FAB messages -->
     <string name="fav_added">Quote marked as favourite</string>
     <string name="fav_removed">Quote removed from favourites</string>
     <string name="favourites">Favourites</string>
@@ -32,5 +29,15 @@
 
     <!-- No favourites message -->
     <string name="no_favorites_found">No quotes marked as favourite!!!</string>
+
+    <!-- Accessibility strings-->
+    <string name="navigation_drawer">Navigation Drawer</string>
+    <string name="author_card_view">Author card view</string>
+    <string name="profile_picture">Profile picture</string>
+    <string name="category_card_view">Category card view</string>
+    <string name="fav_quote_card_view">Favourite quote card view</string>
+    <string name="quote_card_view">Quotes card view</string>
+    <string name="app_icon">App icon</string>
+    <string name="fab_icon">Add to favourites</string>
 
 </resources>

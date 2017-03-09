@@ -10,7 +10,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_margin="@dimen/card_margin"
-        card_view:cardElevation="@dimen/card_elevation" >
+        card_view:cardElevation="@dimen/card_elevation"
+        android:contentDescription="@string/author_card_view"
+        android:focusable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
