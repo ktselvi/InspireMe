@@ -8,7 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.crash.FirebaseCrash;
@@ -51,7 +51,7 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
     Toolbar toolbar;
 
     @BindView(R.id.quotes_image)
-    ImageView backgroundImage;
+    TextView backgroundText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +62,6 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
 
         setSupportActionBar(toolbar);
 
-        //Downloaded the image "http://www.ultimatedesignertoolkit.com/wp-content/uploads/2015/11/Background_1.jpg" for use as background
-        backgroundImage.setImageResource(R.drawable.background);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbarLayout.setTitle(getString(R.string.app_title_quotes));
 
@@ -73,6 +70,8 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
             viewType = savedInstanceState.getString("KEY_VIEW_TYPE");
             selectedValue = savedInstanceState.getString("KEY_VALUE");
             quotesList = savedInstanceState.getParcelableArrayList("KEY_LIST");
+            //Set the selected category/author name as the text for collapsing toolbar
+            backgroundText.setText(selectedValue);
             initializeFragment();
         }
         else{
@@ -84,6 +83,9 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
             else {
                 viewType = extras.getString(KEY_VIEW_TYPE);
                 selectedValue = extras.getString(KEY_SELECTED_VALUE);
+
+                //Set the selected category/author name as the text for collapsing toolbar
+                backgroundText.setText(selectedValue);
 
                 //Log the event in firebase analytics
                 Bundle bundle = new Bundle();
@@ -100,6 +102,9 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
         }
     }
 
+    /**
+     * Fetch the quotes based on the user selection
+     */
     private void fetchQuotes() {
         if("categories".equals(viewType)){
             quotesListener_Tag = new ValueEventListener() {
@@ -174,6 +179,10 @@ public class QuotesListActivity extends AppCompatActivity implements QuoteClickL
         }
     }
 
+    /**
+     * Click listener for the quotes
+     * @param position
+     */
     @Override
     public void handleQuoteClicked(int position) {
         Intent intent = new Intent(this, QuoteDetailActivity.class);
