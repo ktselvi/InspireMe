@@ -39,9 +39,11 @@ public class FavQuotesActivity extends AppCompatActivity implements FavQuoteClic
         //Initialize the fragment
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-
-        FavouritesFragment quotesListFragment = new FavouritesFragment();
-        ft.replace(R.id.fav_quotes_list_fragment_holder, quotesListFragment, FRAGMENT_TAG).commit();
+        //If fragment is not already present, then attach it
+        if(fm.findFragmentByTag(FRAGMENT_TAG) == null){
+            FavouritesFragment quotesListFragment = new FavouritesFragment();
+            ft.replace(R.id.fav_quotes_list_fragment_holder, quotesListFragment, FRAGMENT_TAG).commit();
+        }
     }
 
     @Override
