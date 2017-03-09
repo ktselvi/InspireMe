@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -66,9 +67,13 @@ public class MainActivity extends AppCompatActivity
     private String ITEM_ID = "Navigation drawer item";
     private SharedPreferences mPreferences;
     private String FIRST_USAGE_TAG = "FirstUsage";
-    private String FRAGMENT_TAG = "ListFragment";
+    private String CATEGORIES_FRAGMENT_TAG = "CategoriesListFragment";
+    private String AUTHORS_FRAGMENT_TAG = "AuthorsListFragment";
     private String KEY_VIEW_TYPE = "ViewType";
     private String KEY_SELECTED_VALUE = "Value";
+    private String CURRENT_FRAGMENT_KEY = "CurrentFragment";
+    private String CURRENT_FRAGMENT_CATEGORY = "category";
+    private String CURRENT_FRAGMENT_AUTHOR = "author";
 
     private BroadcastReceiver mConnectionReceiver;
     private CategoriesListFragment categoriesListFragment;
@@ -119,7 +124,22 @@ public class MainActivity extends AppCompatActivity
             //Setting up Firebase
             initializeFirebase();
             //Add listeners for firebase references and draw the UI as the categories view is the default view when the activity is created
-            getCategoriesData(true);
+            if(savedInstanceState != null && savedInstanceState.getString(CURRENT_FRAGMENT_KEY) != null){
+                //If state is saved, then restore the fragment which user was viewing
+                if(CURRENT_FRAGMENT_CATEGORY.equals(savedInstanceState.getString(CURRENT_FRAGMENT_KEY))){
+                    getCategoriesData(true);
+                }
+                else if(CURRENT_FRAGMENT_AUTHOR.equals(savedInstanceState.getString(CURRENT_FRAGMENT_KEY))){
+                    getAuthorsData(true);
+                }
+                else {
+                    FirebaseCrash.report(new Exception("Non existent fragment name"));
+                }
+            }
+            else{
+                //Draw the default view
+                getCategoriesData(true);
+            }
         }
     }
 
@@ -349,7 +369,7 @@ public class MainActivity extends AppCompatActivity
             mLoadingDialog.dismiss();
         }
 
-        ft.replace(R.id.fragment_holder, categoriesListFragment, FRAGMENT_TAG).commit();
+        ft.replace(R.id.fragment_holder, categoriesListFragment, CATEGORIES_FRAGMENT_TAG).commit();
     }
 
     /**
@@ -395,7 +415,7 @@ public class MainActivity extends AppCompatActivity
             mLoadingDialog.dismiss();
         }
 
-        ft.replace(R.id.fragment_holder, authorsListFragment, FRAGMENT_TAG).commit();
+        ft.replace(R.id.fragment_holder, authorsListFragment, AUTHORS_FRAGMENT_TAG).commit();
     }
 
     @Override
@@ -432,5 +452,22 @@ public class MainActivity extends AppCompatActivity
      */
     public void setNavDrawerCheckedItem(int id){
         navigationView.setCheckedItem(id);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //Saving the name info about the current fragment, so that it can be used to reinstate the current view on device rotation
+        Fragment myFragment = getSupportFragmentManager().findFragmentByTag(CATEGORIES_FRAGMENT_TAG);
+        if (myFragment != null && myFragment.isVisible()) {
+            outState.putString(CURRENT_FRAGMENT_KEY, CURRENT_FRAGMENT_CATEGORY);
+        }
+        else {
+            myFragment = getSupportFragmentManager().findFragmentByTag(AUTHORS_FRAGMENT_TAG);
+            if (myFragment != null && myFragment.isVisible()) {
+                outState.putString(CURRENT_FRAGMENT_KEY, CURRENT_FRAGMENT_AUTHOR);
+            }
+        }
+
+        super.onSaveInstanceState(outState);
     }
 }
